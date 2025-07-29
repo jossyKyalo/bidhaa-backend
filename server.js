@@ -7,7 +7,7 @@ const { testConnection } = require('./config/supabase');
 const errorHandler = require('./middleware/errorHandler');
 
 // Import routes
-const authRoutes = require('./routes/auth');
+const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const orderRoutes = require('./routes/orderRoutes');
