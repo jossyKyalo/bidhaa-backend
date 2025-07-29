@@ -301,10 +301,8 @@ const getDashboardStats = async (req, res, next) => {
     }
 };
 
-// Customer Management
 const getAllCustomers = async (req, res, next) => {
     try {
-        // Get all customers
         const { data: customers, error: customersError } = await supabase
             .from('users')
             .select('id, name, email, phone, address, created_at')
@@ -315,16 +313,12 @@ const getAllCustomers = async (req, res, next) => {
             throw customersError;
         }
 
-        // Get order statistics for each customer
         const customersWithStats = await Promise.all(
-            (customers || []).map(async (customer) => {
+            customers.map(async (customer) => {
                 const { data: orders, error: ordersError } = await supabase
                     .from('orders')
-            }
-            )
-        )
-        const ordersWithItems = await Promise.all(
-            (orders || []).map(async (order) => {
+                    .select('total_amount, status')
+                    .eq('user_id', customer.id);
 
                 if (ordersError) {
                     console.error('Error fetching customer orders:', ordersError);
@@ -335,10 +329,10 @@ const getAllCustomers = async (req, res, next) => {
                     };
                 }
 
-                const totalOrders = orders?.length || 0;
-                const totalSpent = orders?.reduce((sum, order) => {
+                const totalOrders = orders.length;
+                const totalSpent = orders.reduce((sum, order) => {
                     return order.status !== 'Cancelled' ? sum + (order.total_amount || 0) : sum;
-                }, 0) || 0;
+                }, 0);
 
                 return {
                     ...customer,
@@ -355,10 +349,11 @@ const getAllCustomers = async (req, res, next) => {
             }
         });
     } catch (error) {
-        console.error('Get all orders error:', error);
+        console.error('Get all customers error:', error);
         next(error);
     }
 };
+
 
 module.exports = {
     createProduct,
