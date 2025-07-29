@@ -19,16 +19,27 @@ const inquiryRoutes = require('./routes/inquiryRoutes');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Security middleware
-app.use(helmet());
+ 
 app.use(cors({
-    origin: [ 'https://bidhaaline-frontend-d795.vercel.app'],
+    origin: ['https://bidhaaline-frontend-d795.vercel.app'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-app.options('*', cors());
+// Handling preflight requests
+app.options('*', cors({
+    origin: ['https://bidhaaline-frontend-d795.vercel.app'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// Security middleware - helmet AFTER cors with modified settings
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginOpenerPolicy: false
+}));
 
 // Rate limiting
 const limiter = rateLimit({
