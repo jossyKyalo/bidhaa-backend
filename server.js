@@ -22,7 +22,7 @@ const PORT = process.env.PORT || 3000;
 // Manual CORS middleware - most reliable approach
 app.use((req, res, next) => {
     const origin = req.headers.origin;
-    const allowedOrigins = ['https://bidhaaline-frontend-d795.vercel.app'];
+    const allowedOrigins = ['https://bidhaaline-frontend-d795.vercel.app', 'https://bidhaaline-frontend.vercel.app'];
     
     if (allowedOrigins.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
